@@ -1,0 +1,131 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Walk Safer</title>
+  <meta name="description" content="Urban Forest Health">
+  <meta name="author" content="Lucio Tolentino">
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+ <link href='http://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+  <script src="../static/Leaflet.MakiMarkers.js"></script>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" type="text/css" href="static/style.css" media="screen" />
+ </head>
+
+<body class="body">
+
+	<!-- TOOL BAR-->
+	<div id = "header">
+		<a href="map.html">Top</a>
+	</div>
+    
+    <!-- INTRODUCTION -->
+    <div id = "introduction">
+    	<h1> 
+    		<img src="static/car.png" alt="car" style="height:25px"></img>
+    		Urban Forest Health
+    		<img src="static/car.png" alt="car" style="height:25px"></img>
+    	</h1>
+	    <h3> blah blah blah <a href="https://github.com/seanluciotolentino/dangerous-intersections">GitHub<a>.</h3>
+
+	</div>
+
+	<!-- EXPLORATORY ANALYSIS-->
+	<a name="exploratory_analysis"></a> 
+	<div id = "exploratory_analysis" class="application">		
+		
+		<h1>Urban Forest Health</h1>
+
+        <div id="exploratory_analysis_application">
+        	Measure of health: <span id = 'ea_dd2'></span><br>
+        	<button onclick="draw_map()" type="button">(refresh)</button>  
+		</div>
+
+       
+        <div id = 'map' class='map'></div>
+
+        <p>blah blah blah</p>
+            
+	</div>
+	
+	
+	<script>
+
+	//define dropdowns here
+	var dropdowns = [
+	    				{"name":"health_metric", 
+	    				  "select":"span#ea_dd2",
+	                      "values": ['Health (% alive)',
+									'311 requests for parks services',
+									'Sizes',
+									'Diversity (number of species)'
+	                                ]},
+	                    
+	                    ];
+	    //BUILD DROPDOWNS 
+	    for(var i=0; i<dropdowns.length; i++){
+	        dropdown = dropdowns[i]
+			//add the dropdown
+			d3.select(dropdown.select)
+			 	.append("select")
+			 	.attr("class", "dropdown")
+			 	.attr("name", dropdown.name)
+			 	.attr("id", dropdown.name);
+
+			//add each value of the dropdown
+			for(var j=0; j<dropdown.values.length; j++){
+	            value = dropdown.values[j]
+				d3.select("select#"+dropdown.name)
+					.append("option")
+					.attr("value", this.value)
+					.html(value.replace("_", " ").replace("_", " "));
+			}
+		};
+
+		
+
+		function get_resource(resource){
+			//helper function for getting data from server
+			var xhr = new XMLHttpRequest();
+    			xhr.open('GET', resource, false);
+    			xhr.send(null);
+    			var ret = JSON.parse(xhr.response);
+    		console.log('getting ' + resource);
+    		console.log(ret);
+    		return ret;
+    		//return $.get(resource)
+		}
+
+
+	    //REDRAW EXPLORATORY ANALYSIS MAP
+	    function draw_map(){
+			ea_map.remove()
+			ea_map = L.map("map").setView([40.686106, -73.946747], 11);
+			L.tileLayer('http://{s}.tiles.mapbox.com/v3/seanluciotolentino.jhknj4m5/{z}/{x}/{y}.png', {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',maxZoom: 18
+				}
+			).addTo(ea_map);
+				
+			//grab variables for mapping
+	        var metric = d3.select("#health_metric")[0][0].selectedOptions[0].getAttribute("value");
+	        
+	        //make api call and map data points
+			data = get_resource("/test")
+		
+			//add polygons
+			for(var i =0 ; i < data.polygons.length; i++){
+				polygon = data.polygons[i];
+				L.rectangle(polygon.bounds, {color: "#ff7800"}).addTo(ea_map);
+			};
+	};
+
+
+	//CREATE MAPS AND CALL RESPECTIVE DRAW FUNCTIONS
+	var ea_map = L.map("map").setView([40.686106, -73.946747], 11);
+	draw_map();
+
+    </script>
+
+</body>
+</html>
