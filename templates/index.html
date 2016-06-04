@@ -2,7 +2,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Walk Safer</title>
+  <title>Urban Forest Health Tree-1-1</title>
   <meta name="description" content="Urban Forest Health">
   <meta name="author" content="Lucio Tolentino">
   <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
@@ -24,11 +24,11 @@
     <!-- INTRODUCTION -->
     <div id = "introduction">
     	<h1> 
-    		<img src="static/car.png" alt="car" style="height:25px"></img>
-    		Urban Forest Health
-    		<img src="static/car.png" alt="car" style="height:25px"></img>
+    		<img src="static/tree.png" alt="tree" style="height:50px"></img>
+    		Urban Forest Health Tree-1-1
+    		<img src="static/tree.png" alt="tree" style="height:50px"></img>
     	</h1>
-	    <h3> blah blah blah <a href="https://github.com/seanluciotolentino/dangerous-intersections">GitHub<a>.</h3>
+	    <h3> With the 1995 and 2005 street tree censuses, NYC Parks has been able to catalyze major advances in urban forest management, making science-based operational decisions and quantify the benefits of the urban forest. In addition to understanding patterns in resource distribution and condition over time, long-term urban forest management decisions must consider factors such as climate change, pests, diseases, land use, and species diversity. <a href="https://github.com/BetaNYC/tree-one-one">GitHub<a>.</h3>
 
 	</div>
 
@@ -36,17 +36,14 @@
 	<a name="exploratory_analysis"></a> 
 	<div id = "exploratory_analysis" class="application">		
 		
-		<h1>Urban Forest Health</h1>
-
+		<h1>Urban Forest Health Map</h1>
+		<p>Select a metric to visualize for the health of New York City's urban forest!</p>
         <div id="exploratory_analysis_application">
-        	Measure of health: <span id = 'ea_dd2'></span><br>
+        	Measure of health: <span id = 'ea_dd2'></span>
         	<button onclick="draw_map()" type="button">(refresh)</button>  
 		</div>
 
-       
         <div id = 'map' class='map'></div>
-
-        <p>blah blah blah</p>
             
 	</div>
 	
@@ -57,10 +54,9 @@
 	var dropdowns = [
 	    				{"name":"health_metric", 
 	    				  "select":"span#ea_dd2",
-	                      "values": ['Health (% alive)',
-									'311 requests for parks services',
-									'Sizes',
-									'Diversity (number of species)'
+	                      "values": ['aliveness',
+									'size',
+									'diversity'
 	                                ]},
 	                    
 	                    ];
@@ -92,8 +88,8 @@
     			xhr.open('GET', resource, false);
     			xhr.send(null);
     			var ret = JSON.parse(xhr.response);
-    		console.log('getting ' + resource);
-    		console.log(ret);
+    		//console.log('getting ' + resource);
+    		//console.log(ret);
     		return ret;
     		//return $.get(resource)
 		}
@@ -111,12 +107,11 @@
 	        var metric = d3.select("#health_metric")[0][0].selectedOptions[0].getAttribute("value");
 	        
 	        //make api call and map data points
-			data = get_resource("/test")
-		
+			data = get_resource("/test/"+metric)
 			//add polygons
 			for(var i =0 ; i < data.polygons.length; i++){
 				polygon = data.polygons[i];
-				L.rectangle(polygon.bounds, {color: "#ff7800"}).addTo(ea_map);
+				L.rectangle(polygon.bounds, {weight:0, fillColor: polygon.color, fillOpacity:0.5}).addTo(ea_map).bindPopup(polygon.popup_text);
 			};
 	};
 

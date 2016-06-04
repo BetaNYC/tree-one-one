@@ -1,7 +1,7 @@
 /* Page structures */
 
 .body {
-background: #FFFFFF url('background_small.jpg') center center fixed;
+background: #FFFFFF url('forest.jpg') center center fixed;
 background-repeat: no-repeat;
 -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -58,12 +58,12 @@ border-radius:6px;
 -moz-border-radius: 6px;
 -webkit-border-radius: 6px;
 /*background-color: #399CB7;*/
-border: #399CB7;
+border: #00b300;
 font-family: 'Oxygen', Helvetica, Verdana, Arial;
 font-size: 14pt;
 padding: 20px;
 
-background: #399CB7 repeat-x;
+background: #00b300 repeat-x;
     display: inline-block;
     padding: 5px 10px 6px;
     color: #fff;
